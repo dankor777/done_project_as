@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{%block content%}
+  <a href="#!"><img class="card-img-top" src="https://qtmd.org/wp-content/uploads/2019/07/howcuttingdo.jpg" alt="..." /></a>
+<h1> {{post.tytul}} </h1>
+<small> Przez: {{post.id_autora}} </small>
+<hr>
+<br/>
+<h3>
+{{post.tresc}}
+<h3/>
+<br>
+<h3> Komentarze: </h3>
+<hr>
+<h2> Napisz Komentarz: </h2>
+<div class="main-comment-section">
+  {% include 'comments.html' %}
+</div>
+{%endblock%}

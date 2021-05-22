@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Posty</h1>
+<hr>
+<ul>
+
+{% for p in object_list %}
+
+          <!-- Blog post-->
+          <div class="card mb-4" id="posty">
+              <a href="{%url 'post_detail' p.id %}"><img class="card-img-top" src="https://qtmd.org/wp-content/uploads/2019/07/howcuttingdo.jpg" alt="..." /></a>
+              <div class="card-body">
+                  <h2 class="card-title h4">{{p.tytul}}</h2>
+                  <p class="card-text">{{p.tresc|truncatechars:390}}</p>
+                  <a class="btn btn-primary" href="{%url 'post_detail' p.id %}">Czytaj dalej →</a>
+              </div>
+          </div>
+
+      {% ifequal user.groups.all.0.name "Admini" %}
+            <a href="{% url 'edytuj_post' p.pk %}" class="btn btn-primary" style="margin-left:15px;">Edytuj</a>
+      <a href="{% url 'usun_post' p.pk %}" class="btn btn-primary" style="margin-left:15px;">Usun</a>{% endifequal %}
+    <hr>
+{%endfor%}
+</ul>
+<br>
+{%if is_paginated %}
+  {% if page_obj.has_previous %}
+<a class="btn btn-primary" href="?page=1">Pierwsza</a>
+<a class="btn btn-primary" href="?page={{page_obj.previous_page_number}}">Poprzednia</a>
+  {%endif%}
+  {%for num in page_obj.paginator.page_range%}
+    {% if page_obj.number == num %}
+      <a class="btn btn-primary" href="?page={{num}}">{{num}}</a>
+    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+      <a class="btn btn-primary" href="?page={{num}}">{{num}}</a>
+    {% endif %}
+  {%endfor%}
+{% if page_obj.has_next %}
+  <a class="btn btn-primary" href="?page={{page_obj.next_page_number}}">Nastepna</a>
+  <a class="btn btn-primary" href="?page={{page_obj.paginator.num_pages}}">Ostatnia</a>
+{%endif%}
+{%endif%}
+
+{%endblock%}

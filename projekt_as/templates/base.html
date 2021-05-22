@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
+<script
+  src="https://code.jquery.com/jquery-3.1.1.min.js"
+  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+  crossorigin="anonymous"></script>
+<script src="semantic/dist/semantic.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <script type="text/javascript">
+    $(location).attr('href');
+    $(document).ready(function(){
+      $( ".reply-btn" ).click(function() {
+        $(this).parent().parent().next(".replied-comments").fadeToggle()
+      });
+    });
+
+    $(document).on('submit', '.comment-form', function(event){
+        event.preventDefault();
+        console.log($(this).serialize());
+        $.ajax({
+          type: 'POST',
+          url: $(this).attr('action'),
+          data: $(this).serialize(),
+          dataType: 'json',
+          success: function(response) {
+            $('.main-comment-section').html(response['form']);
+            $('textarea').val('');
+            $('.reply-btn').click(function() {
+              $(this).parent().parent().next('.replied-comments').fadeToggle();
+              $('textarea').val('');
+            });
+          },
+          error: function(rs, e) {
+            console.log(rs.responseText);
+          },
+        });
+      });
+      $(document).on('submit', '.reply-form', function(event){
+           event.preventDefault();
+           console.log($(this).serialize());
+           $.ajax({
+             type: 'POST',
+             url: $(this).attr('action'),
+             data: $(this).serialize(),
+             dataType: 'json',
+             success: function(response) {
+               $('.main-comment-section').html(response['form']);
+               $('textarea').val('');
+               $('.reply-btn').click(function() {
+                 $(this).parent().parent().next('.replied-comments').fadeToggle();
+                 $('textarea').val('');
+               });
+             },
+             error: function(rs, e) {
+               console.log(rs.responseText);
+             },
+           });
+         });
+
+
+
+
+/*    $(document).on('submit', '.comment-form', function(event){
+      event.preventDefault();
+      $.ajax({
+        type: 'POST',
+        url: $(this).attr('action'),
+        data: $(this).serialize(),
+        dataType: 'json',
+        success: function(response){
+          $('.main-comments-section').html(response['form']);
+        },
+        error: function(rs, e){
+          console.log(rs.responseText);
+        },
+      });
+    }); */
+      </script>
+    <title>Projekt AS</title>
+    <!-- <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>tinymce.init({selector:'textarea'});</script> -->
+ </head>
+ <body>
+   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+       <div class="container px-5">
+           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+           <div class="collapse navbar-collapse" id="navbarSupportedContent">
+               <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                 {%if user.is_authenticated %}
+                   <a class="navbar-brand" href="/admin">jestes zalogowany jako {{user.first_name}}</a>
+                   <li class="nav-item"><a class="nav-link active" aria-current="page" href="/">Glowna</a></li>
+                   <li class="nav-item"><a class="nav-link" href="{%url 'logout'%}">Wyloguj</a></li>
+                   {%else%}
+                   <li class="nav-item"><a class="nav-link active" aria-current="page" href="/">Glowna</a></li>
+                   <li class="nav-item"><a class="nav-link active" aria-current="page" href="{% url 'login' %}">LogIn</a></li>
+                   <li class="nav-item"><a class="nav-link" href="{% url 'rejestracja'%}">Rejestruj</a></li>
+                 {%endif%}
+               </ul>
+           </div>
+       </div>
+   </nav>
+   <!-- Header-->
+   <header class="bg-dark py-5">
+       <div class="container px-5">
+           <div class="row gx-5 justify-content-center">
+               <div class="col-lg-6">
+                   <div class="text-center my-5">
+                       <h1 class="display-5 fw-bolder text-white mb-2">Projekt zaliczeniowy na aplikacje sieciowe- blog.</h1>
+                       <p class="lead text-white-50 mb-4">django, jquery, ajax, bootstrap</p>
+                       <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                           <a class="btn btn-primary btn-lg px-4 me-sm-3" href="#posty">Przegladaj</a>
+                           <a class="btn btn-outline-light btn-lg px-4" href="">placeholder</a>
+                       </div>
+                   </div>
+               </div>
+           </div>
+       </div>
+   </header>
+
+
+    </br>
+    <div class="container">
+      {% block content %}
+
+      {%endblock%}
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js" integrity="sha384-q2kxQ16AaE6UbzuKqyBE9/u/KzioAlnx2maXQHiDX9d4/zp8Ok3f+M7DPm+Ib6IU" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-pQQkAEnwaBkjpqZ8RU1fF1AKtTcHJwFl3pblpTlHXybJjHpMYo79HY3hIi4NKxyj" crossorigin="anonymous"></script>
+    -->
+  </body>
+</html>

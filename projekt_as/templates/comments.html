@@ -1,0 +1,52 @@
+
+<div class="container-fluid mt-2">
+  <div class="form-group row">
+    <form  id="post_form" method="post" class="comment-form" action="{% url 'post_detail' post.id %}"  >
+       {%csrf_token%}
+       {{comment_form.as_p}}
+       {% if request.user.is_authenticated %}
+       <input type="submit"  value="Wyslij" class="btn btn-primary">
+       {%else%}
+       <input type="submit"  value="Wyslij" class="btn btn-primary" disabled>
+       {%endif%}
+    </form>
+    </div>
+      </div>
+   {{comments.count}} Komentarzy{{Comments|pluralize}}
+   <br>
+   {% for comment in comments %}
+   <br>
+   <figure>
+       <blockquote class="blockquote">
+          <p>{{comment.content}}</p>
+       </blockquote>
+       <figcaption class="blockquote-footer">
+          przez <cite title="Source Title">{{comment.user|capfirst}}</cite>
+         <button type="button" name="button" class="reply-btn fa fa-reply fa-2x" style="background-color:none;width:35px;height:25px;border:none;background-color:#FFFFFF"></button>
+       </figcaption>
+    </figure>
+   <div class="replied-comments container mt-2" style="display:none;">
+     {%for reply in comment.replies.all%}
+     <figure>
+        <blockquote class="blockquote" >
+           <p>{{reply.content}}</p>
+        </blockquote>
+        <figcaption class="blockquote-footer">
+           by<cite title="Source Title"> {{reply.user|capfirst}}</cite>
+        </figcaption>
+     </figure>
+     {%endfor%}
+      <div class="form-group row">
+         <form method="post" class="reply-form" action="{% url 'post_detail' post.id %}">
+            {%csrf_token%}
+            <input type="hidden" name="comment_id" value="{{comment.id}}">
+            {{comment_form.as_p}}
+            {% if request.user.is_authenticated %}
+            <input type="submit" value="Submit" class="btn btn-primary">
+            {%else%}
+            <input type="submit" value="Submit" class="btn btn-primary" disabled>
+            {%endif%}
+         </form>
+      </div>
+   </div>
+   {%endfor%}
